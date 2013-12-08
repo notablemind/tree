@@ -2,6 +2,4 @@ components
 build
 *.swp
 *.swo
-index.js
-test/example/react.js
-test/example/index.css
+test
