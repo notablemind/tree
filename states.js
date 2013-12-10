@@ -47,3 +47,4 @@ function right(trail, tree) {
   children[idx-1].children.push(children.splice(idx, 1)[0])
   return tree
 }
+

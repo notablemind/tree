@@ -2,25 +2,39 @@
 
 var states = require('./states')
 
-///var _ = require('lodash')
+function eqar(ar1, ar2) {
+  if (ar1.length !== ar2.length) return false
+  for (var i=0; i<ar1.length; i++) {
+    if (ar1[i] !== ar2[i]) return false
+  }
+  return true
+}
+
+var _ = require('lodash')
 
 var Tree = module.exports = React.createClass({
   getDefaultProps: function () {
     return {
       id: 0,
       tree: [],
-      manager: null
+      manager: null,
+      handle: false
     }
   },
   getInitialState: function () {
     return {
-      tree: this.props.tree
+      tree: this.props.tree,
+      hovering: false
     }
+  },
+  shouldComponentUpdate: function (newp, oldp) {
+    return newp.id != oldp.id || !_.isEqual(newp.tree, oldp.tree)
   },
   componentWillMount: function () {
     if (!this.props.manager) return
     this.props.manager.getTreeFrom(this.props.id, this.gotIds)
   },
+
   go: function (what, trail) {
     var tree = states[what](trail, this.state.tree)
     // TODO also return info about what to save. Don't want to save the whole
@@ -30,9 +44,24 @@ var Tree = module.exports = React.createClass({
     if (!this.props.manager) return
     this.props.manager.saveAt(this.props.id, tree, this.gotIds)
   },
+
   gotIds: function (ids) {
     this.setState({tree: ids})
   },
+
+  hovering: function (id, trail) {
+    if (!this.state.hovering) return false
+    return eqar(trail.concat([id]), this.state.hovering)
+  },
+
+  handleEnter: function (id, trail) {
+    this.setState({hovering: trail.concat([id])})
+  },
+
+  handleLeave: function (id, trail) {
+    this.setState({hovering: false})
+  },
+
   renderOne: function (id, children, trail) {
     var childnodes = false
       , self = this
@@ -48,7 +77,7 @@ var Tree = module.exports = React.createClass({
       )
     }
     return (
-      <div className='tree'>
+      <div className={ 'tree ' + (this.hovering(id, trail) ? 'hover' : '') }>
         <div className='head'>
           {
             this.props.head({
@@ -60,14 +89,21 @@ var Tree = module.exports = React.createClass({
               goRight: this.go.bind(this, 'right', trail)
             })
           }
+          <div onMouseEnter={this.handleEnter.bind(this, id, trail)}
+               onMouseLeave={this.handleLeave.bind(this, id, trail)}
+               className='move-handle'>
+            { this.props.handle }
+          </div>
         </div>
         { childnodes }
       </div>
     )
   },
+
   render: function () {
     return this.renderOne(this.props.id, this.state.tree, [])
   },
+
 })
 
 

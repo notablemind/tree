@@ -13,4 +13,13 @@ body {
 .tree:hover {
   background-color: rgba(0,0,0,.1);
 }
+.tree.hover {
+  border: 1px solid black;
+}
+.move-handle {
+  float: right;
+  width: 20px;
+  height: 10px;
+  background-color: red;
+}
 
