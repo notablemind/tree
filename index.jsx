@@ -18,7 +18,7 @@ var Tree = module.exports = React.createClass({
     }
   },
   componentWillMount: function () {
-    if (this.props.manager) return
+    if (!this.props.manager) return
     this.props.manager.getTreeFrom(this.props.id, this.gotIds)
   },
   go: function (what, trail) {

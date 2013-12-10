@@ -6,23 +6,7 @@
     <script src="react.js"></script>
     <script src="index.js"></script>
     <link rel="stylesheet" href="index.css">
-      <style>
-        body {
-          font-family: sans-serif;
-        }
-        .wrapper {
-          width: 500px;
-          margin: 50px auto;
-          box-shadow: 0 0 5px #ccc;
-          padding: 10px 30px 30px;
-        }
-        .head:hover {
-          background-color: #ccc;
-        }
-        .tree:hover {
-          background-color: rgba(0,0,0,.1);
-        }
-      </style>
+    <link rel="stylesheet" href="setup.css">
   </head>
   <body>
     <a href="https://github.com/notablemind/tree">
@@ -34,41 +18,7 @@
       <h2>Tree Example</h2>
       <div id="place"></div>
     </div>
-    <script>
-      var Head = React.createClass({
-        render: function () {
-        return React.DOM.span({}, [
-          this.props.id,
-          React.DOM.span({onClick: this.props.goLeft}, '<'),
-          React.DOM.span({onClick: this.props.goRight}, '>'),
-          React.DOM.span({onClick: this.props.goDown}, 'v'),
-          React.DOM.span({onClick: this.props.goUp}, '^'),
-        ])
-        }
-      })
-function rTree(idx, depth) {
-  if (depth <= 0) return
-  var n = parseInt(Math.random() * 5)
-    , children = []
-  for (var i=0; i<n; i++) {
-    children.push({
-      id: idx + ':' + i,
-      children: rTree(idx + ':' + i, depth-1)
-    })
-  }
-  return children
-}
-      var data = rTree(0, 5)
-      React.renderComponent(require('tree')({
-        head: Head,
-        data: 'top',
-        id: 0,
-        tree: data,
-        manager: {
-          getTreeFrom: function (id, done) {return done(data);}
-        }
-      }), document.getElementById('place'))
-    </script>
+    <script src="setup.js"></script>
   </body>
 </html>
 
