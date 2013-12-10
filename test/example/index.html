@@ -16,10 +16,20 @@
           box-shadow: 0 0 5px #ccc;
           padding: 10px 30px 30px;
         }
+        .head:hover {
+          background-color: #ccc;
+        }
+        .tree:hover {
+          background-color: rgba(0,0,0,.1);
+        }
       </style>
   </head>
   <body>
-    <a href="https://github.com/notablemind/tree"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/notablemind/tree">
+      <img style="position: absolute; top: 0; right: 0; border: 0;"
+           src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
+           alt="Fork me on GitHub">
+    </a>
     <div class="wrapper">
       <h2>Tree Example</h2>
       <div id="place"></div>
@@ -36,18 +46,19 @@
         ])
         }
       })
-      var data = [{
-          id: 1, children: []
-        }, {
-          id: 2, children: [
-            {
-              id: 3, children: []
-            }, {
-              id: 4, children: []
-            }, {
-              id: 5, children: []
-            }]
-        }]
+function rTree(idx, depth) {
+  if (depth <= 0) return
+  var n = parseInt(Math.random() * 5)
+    , children = []
+  for (var i=0; i<n; i++) {
+    children.push({
+      id: idx + ':' + i,
+      children: rTree(idx + ':' + i, depth-1)
+    })
+  }
+  return children
+}
+      var data = rTree(0, 5)
       React.renderComponent(require('tree')({
         head: Head,
         data: 'top',

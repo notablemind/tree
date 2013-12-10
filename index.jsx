@@ -18,47 +18,20 @@ var Tree = module.exports = React.createClass({
     }
   },
   componentWillMount: function () {
-    this.props.manager.getTreeFrom(this.props.id, function (ids) {
-      this.setState({tree: ids})
-    }.bind(this))
+    if (this.props.manager) return
+    this.props.manager.getTreeFrom(this.props.id, this.gotIds)
   },
-  /*
-  save: function (children) {
-    this.setState({children: children})
-    this.props.manager.setChildren(this.props.id, children, function (ids) {
-      this.setState({children: ids})
-    }.bind(this))
-  },
-  moveUp: function (idx) {
-    if (idx === 0) return console.warn('Moving up and out not yet implemented')
-    var children = this.state.children
-    children.splice(idx-1, 0, children.splice(idx, 1))
-    this.save(children)
-  },
-  moveDown: function (idx) {
-    if (idx === this.children.length - 1) return console.warn('Moving down and out not yet implemented')
-    var children = this.state.children
-    children.splice(idx + 1, 0, children.splice(idx, 1))
-    this.save(children)
-  }
-  indent: function (idx) {
-
-  },
-  addChild: function (idx, start) {
-    var children = this.state.children
-    if (start) {
-      children.unshift(idx)
-    } else {
-      children.push(idx)
-    }
-    this.save(children)
-  },
-  */
   go: function (what, trail) {
     var tree = states[what](trail, this.state.tree)
-    // todo also return info about what to save. Don't want to save the whole
+    // TODO also return info about what to save. Don't want to save the whole
     // tree every time
-    if (tree) this.setState({tree: tree})
+    if (!tree) return
+    this.setState({tree: tree})
+    if (!this.props.manager) return
+    this.props.manager.saveAt(this.props.id, tree, this.gotIds)
+  },
+  gotIds: function (ids) {
+    this.setState({tree: ids})
   },
   renderOne: function (id, children, trail) {
     var childnodes = false
