@@ -5,3 +5,5 @@ build
 index.js
 test/example/react.js
 test/example/index.css
+node_modules
+node.js

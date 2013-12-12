@@ -12,7 +12,13 @@
   "main": "index.js",
   "scripts": [
     "index.js",
-    "states.js"
+    "tree.js",
+    "mixin.js",
+    "states.js",
+    "utils.js",
+    "node.js",
+    "base-manager.js",
+    "manager.js"
   ],
   "styles": [
     "tree.css"

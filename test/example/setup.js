@@ -1,4 +1,5 @@
 
+/*
 var Head = React.createClass({
   render: function () {
     return React.DOM.span({}, [
@@ -10,6 +11,7 @@ var Head = React.createClass({
     ])
   }
 })
+*/
 
 function rTree(idx, depth) {
   if (depth <= 0) return
@@ -18,15 +20,19 @@ function rTree(idx, depth) {
   for (var i=0; i<n; i++) {
     children.push({
       id: idx + ':' + i,
+      data: {
+        name: 'Name of ' + idx + ':' + i
+      },
       children: rTree(idx + ':' + i, depth-1)
     })
   }
   return children
 }
 
-React.renderComponent(require('tree')({
-  head: Head,
-  data: 'top',
+var tree = require('tree')
+
+React.renderComponent(tree.Tree({
+  manager: new tree.Manager(rTree(0, 5)),
   id: 0,
   tree: rTree(0, 5),
 /*
