@@ -1,0 +1,43 @@
+{
+  "name": "tree",
+  "version": "0.0.0",
+  "description": "A tree component for react",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "expect.js": "~0.2.0",
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {
+    "blanket": "~1.1.5"
+  },
+  "scripts": {
+    "test": "make test",
+    "blanket": {
+      "pattern": ".js",
+      "onlyCwd": true,
+      "data-cover-never": [
+        "node_modules",
+        "test",
+        "build"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/notablemind/tree.git"
+  },
+  "keywords": [
+    "tree",
+    "react",
+    "component"
+  ],
+  "author": "Jared Forsyth <jared@jaredforsyth.com>",
+  "license": "Apache v2",
+  "bugs": {
+    "url": "https://github.com/notablemind/tree/issues"
+  },
+  "homepage": "https://github.com/notablemind/tree"
+}

@@ -7,3 +7,5 @@ test/example/index.css
 node_modules
 node.js
 tree.js
+test/example/index.js
+coverage.html
