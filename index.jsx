@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
 
 var _ = require('lodash')
-  , Manager = require('./manager')
+  , Manager = require('manager')
+
   , TreeNode = require('./node')
   , TreeMixin = require('./mixin')
 
@@ -18,6 +19,7 @@ var Tree = module.exports = React.createClass({
       className: '',
       manager: new Manager(),
       head: EmptyHead,
+      headProps: {},
       id: null
     }
   },
@@ -32,13 +34,11 @@ var Tree = module.exports = React.createClass({
               index: i,
               ref: i + '',
               head: this.props.head,
+              headProps: this.props.headProps,
               manager: this.props.manager,
               focus: this.state.focus === id,
+              move: this.moves(i),
               addAfter: this.addAfter.bind(this, i),
-              moveUp: this.moveUp.bind(this, i),
-              moveDown: this.moveDown.bind(this, i),
-              moveLeft: this.moveLeft.bind(this, i),
-              moveRight: this.moveRight.bind(this, i),
             })
           }.bind(this))
         }

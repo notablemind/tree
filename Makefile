@@ -1,5 +1,5 @@
 
-build: components tree.js tree.css node.js manager.js base-manager.js mixin.js
+build: components index.js tree.css node.js mixin.js
 	@component build --dev -o test/example/ -n index
 
 components: component.json
@@ -14,8 +14,8 @@ blanket:
 node.js: node.jsx
 	@jsx node.jsx > node.js
 
-tree.js: tree.jsx
-	@jsx tree.jsx > tree.js
+index.js: index.jsx
+	@jsx index.jsx > index.js
 
 test:
 	@mocha -R spec
