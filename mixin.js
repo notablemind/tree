@@ -24,7 +24,6 @@ module.exports = {
     ids.splice(i+1, 0, ids.splice(i, 1)[0])
     this.setChildren(ids, focus, ids[i+1])
   },
-
   moveRight: function (i, focus) {
     if (i === 0) return false
     var children = this.state.children.slice()

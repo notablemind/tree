@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
 var _ = require('lodash')
-  , states = require('./states')
   , Manager = require('./manager')
   , TreeNode = require('./node')
   , TreeMixin = require('./mixin')
