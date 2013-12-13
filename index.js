@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
 
 var _ = require('lodash')
-  , Manager = require('./manager')
+  , Manager = require('manager')
+
   , TreeNode = require('./node')
   , TreeMixin = require('./mixin')
 
