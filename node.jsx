@@ -12,17 +12,20 @@ var TreeNode = module.exports = React.createClass({
         <ul>
           {
             this.state.children.map(function (id, i) {
-              return this.transferPropsTo(TreeNode({
+              return TreeNode({
                 ref: i + '',
                 id: id,
                 key: id,
                 index: i,
+                head: this.props.head,
+                manager: this.props.manager,
+                focus: this.state.focus === i,
                 addAfter: this.addAfter.bind(this, i),
                 moveUp: this.moveUp.bind(this, i),
                 moveDown: this.moveDown.bind(this, i),
                 moveLeft: this.moveLeft.bind(this, i),
                 moveRight: this.moveRight.bind(this, i),
-              }))
+              })
             }.bind(this))
           }
         </ul>
@@ -37,6 +40,7 @@ var TreeNode = module.exports = React.createClass({
             this.props.head({
               id: this.props.id,
               listen: onData,
+              focus: this.props.focus,
               moveUp: this.props.moveUp,
               moveDown: this.props.moveDown,
               moveLeft: this.props.moveLeft,
