@@ -2,6 +2,10 @@ body {
   font-family: sans-serif;
 }
 
+input.focus {
+  background-color: magenta;
+}
+
 .wrapper {
   width: 500px;
   margin: 50px auto;

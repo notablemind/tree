@@ -11,6 +11,86 @@ var Head = React.createClass({
   }
 })
 
+// for focus testing
+var InputHead = React.createClass({
+  keys: function (e) {
+    if (e.keyCode === 9) {
+      e.preventDefault()
+      if (e.shiftKey) {
+        this.props.moveLeft(true)
+      } else {
+        this.props.moveRight(true)
+      }
+    }
+    if (e.keyCode === 38 && e.shiftKey) {
+      e.preventDefault()
+      this.props.moveUp(true)
+    }
+    if (e.keyCode === 40 && e.shiftKey) {
+      e.preventDefault()
+      this.props.moveDown(true)
+    }
+  },
+  // all about the focus
+  componentDidMount: function () {
+    if (this.state.focus) {
+      this.refs.input.getDOMNode().focus()
+    }
+  },
+  componentDidUpdate: function () {
+    if (this.state.focus) {
+      this.refs.input.getDOMNode().focus()
+    }
+  },
+  componentWillReceiveProps: function (props, oprops) {
+    if (props.focus) this.setState({focus: true})
+  },
+
+  componentWillMount: function () {
+    if (!this.props.on) return
+    this.props.on(this.gotData)
+  },
+
+  componentWillUnmount: function () {
+    this.props.off(this.gotData)
+  },
+
+  gotData: function (data) {
+    this.setState({input: data.name})
+  },
+
+  inputChange: function (e) {
+    this.setState({input:e.target.value})
+    this.props.set({name: e.target.value})
+  },
+  blur: function () {
+    this.setState({focus: false})
+  },
+  focus: function () {
+    this.setState({focus: true})
+  },
+
+  getInitialState: function () {
+    return {
+      focus: this.props.focus,
+      input: ''
+    }
+  },
+
+  render: function () {
+    return React.DOM.input({
+      ref: 'input',
+      value: this.state.input,
+      className: this.state.focus ? 'focus' : '',
+      placeholder: 'feedme',
+      onChange: this.inputChange,
+      onBlur: this.blur,
+      onFocus: this.focus,
+      onKeyDown: this.keys
+    })
+  }
+})
+
 function rid() {
   var chars = 'abcdef0123456789'
     , id = ''
@@ -44,4 +124,10 @@ React.renderComponent(tree.Tree({
   head: Head,
   id: 0,
 }), document.getElementById('place'))
+
+React.renderComponent(tree.Tree({
+  manager: new tree.Manager({id: 0, children: rTree(0, 3)}),
+  head: InputHead,
+  id: 0,
+}), document.getElementById('inputs'))
 

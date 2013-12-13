@@ -12,21 +12,19 @@ module.exports = {
     })
   },
 
-  setChildren: function (ids) {
-    this.setState({children: ids})
-    this.props.manager.set('children', this.props.id, ids)
-  },
   moveUp: function (i, focus) {
     if (i === 0) return
     var ids = this.state.children.slice()
     ids.splice(i-1, 0, ids.splice(i, 1)[0])
-    this.setChildren(ids, focus, i-1)
+    this.setChildren(ids, focus, ids[i-1])
   },
   moveDown: function (i, focus) {
+    if (i === this.state.children.length-1) return
     var ids = this.state.children.slice()
     ids.splice(i+1, 0, ids.splice(i, 1)[0])
-    this.setChildren(ids, focus, i+1)
+    this.setChildren(ids, focus, ids[i+1])
   },
+
   moveRight: function (i, focus) {
     if (i === 0) return false
     var children = this.state.children.slice()
@@ -41,15 +39,16 @@ module.exports = {
     this.props.addAfter(id, focus)
     this.setChildren(children)
   },
+
   addAfter: function (i, id, focus) {
     var children = this.state.children.slice()
     children.splice(i+1, 0, id)
-    this.setChildren(children, focus, i+1)
+    this.setChildren(children, focus, id)
   },
   addToEnd: function (id, focus) {
     var children = this.state.children.slice()
     children.push(id)
-    this.setChildren(children, focus, children.length-1)
+    this.setChildren(children, focus, id)
   },
 
   getDefaultProps: function () {
@@ -64,10 +63,15 @@ module.exports = {
       focus: false
     }
   },
-  gotChildren: function (children, focus, i) {
-    var st = {children: children}
+  gotChildren: function (children) {
+    this.setState({children: children})
+  },
+
+  setChildren: function (ids, focus, i) {
+    var st = {children: ids}
     if (focus) st.focus = i
     this.setState(st)
+    this.props.manager.set('children', this.props.id, ids)
   },
 
   componentWillReceiveProps: function (nprops) {

@@ -31,13 +31,15 @@ var Tree = module.exports = React.createClass({
               id: id,
               key: id,
               index: i,
+              ref: i + '',
               head: this.props.head,
+              manager: this.props.manager,
+              focus: this.state.focus === id,
               addAfter: this.addAfter.bind(this, i),
               moveUp: this.moveUp.bind(this, i),
               moveDown: this.moveDown.bind(this, i),
               moveLeft: this.moveLeft.bind(this, i),
               moveRight: this.moveRight.bind(this, i),
-              manager: this.props.manager
             })
           }.bind(this))
         }

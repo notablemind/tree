@@ -19,7 +19,7 @@ var TreeNode = module.exports = React.createClass({
                 index: i,
                 head: this.props.head,
                 manager: this.props.manager,
-                focus: this.state.focus === i,
+                focus: this.state.focus === id,
                 addAfter: this.addAfter.bind(this, i),
                 moveUp: this.moveUp.bind(this, i),
                 moveDown: this.moveDown.bind(this, i),
@@ -39,7 +39,8 @@ var TreeNode = module.exports = React.createClass({
           {
             this.props.head({
               id: this.props.id,
-              listen: onData,
+              on: onData,
+              off: this.props.manager.off.bind(this.props.manager, 'data', this.props.id),
               focus: this.props.focus,
               moveUp: this.props.moveUp,
               moveDown: this.props.moveDown,
