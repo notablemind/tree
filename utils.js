@@ -2,6 +2,30 @@
 module.exports = {
   toMap: toMap,
   fromMap: fromMap,
+  areq: areq,
+  cBind: cBind,
+  cEqual: cEqual
+}
+
+function areq(a, b) {
+  if (a.length != b.length) return false
+  for (var i=0; i<a.length; i++) {
+    if (a[i] !== b[i]) return false
+  }
+  return true
+}
+
+function cBind(fn) {
+  var args = [].slice.call(arguments, 1)
+    , f = fn.bind.apply(fn, args)
+  f.args = args
+  f.orig = fn
+  return f
+}
+
+function cEqual(f1, f2) {
+  if (f1.orig !== f2.orig) return false
+  return areq(f1.args, f2.args)
 }
 
 function toMap(data) {

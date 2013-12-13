@@ -4,6 +4,7 @@ var _ = require('lodash')
   , states = require('./states')
   , Manager = require('./manager')
   , TreeNode = require('./node')
+  , TreeMixin = require('./mixin')
 
 var EmptyHead = React.createClass({
   render: function () {
@@ -12,6 +13,7 @@ var EmptyHead = React.createClass({
 })
 
 var Tree = module.exports = React.createClass({
+  mixins: [TreeMixin],
   getDefaultProps: function () {
     return {
       className: '',
@@ -27,8 +29,14 @@ var Tree = module.exports = React.createClass({
           this.state.children.map(function (id, i) {
             return TreeNode({
               id: id,
+              key: id,
+              index: i,
               head: this.props.head,
               addAfter: this.addAfter.bind(this, i),
+              moveUp: this.moveUp.bind(this, i),
+              moveDown: this.moveDown.bind(this, i),
+              moveLeft: this.moveLeft.bind(this, i),
+              moveRight: this.moveRight.bind(this, i),
               manager: this.props.manager
             })
           }.bind(this))

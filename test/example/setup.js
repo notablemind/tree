@@ -1,17 +1,24 @@
 
-/*
 var Head = React.createClass({
   render: function () {
     return React.DOM.span({}, [
       this.props.id,
-      React.DOM.span({onClick: this.props.goLeft}, '<'),
-      React.DOM.span({onClick: this.props.goRight}, '>'),
-      React.DOM.span({onClick: this.props.goDown}, 'v'),
-      React.DOM.span({onClick: this.props.goUp}, '^'),
+      React.DOM.span({onClick: this.props.moveLeft}, '<'),
+      React.DOM.span({onClick: this.props.moveRight}, '>'),
+      React.DOM.span({onClick: this.props.moveDown}, 'v'),
+      React.DOM.span({onClick: this.props.moveUp}, '^'),
     ])
   }
 })
-*/
+
+function rid() {
+  var chars = 'abcdef0123456789'
+    , id = ''
+  for (var i=0; i<5; i++) {
+    id += chars[parseInt(Math.random()*chars.length)]
+  }
+  return id
+}
 
 function rTree(idx, depth) {
   if (depth <= 0) return
@@ -19,7 +26,7 @@ function rTree(idx, depth) {
     , children = []
   for (var i=0; i<n; i++) {
     children.push({
-      id: idx + ':' + i,
+      id: rid(), // idx + ':' + i,
       data: {
         name: 'Name of ' + idx + ':' + i
       },
@@ -30,15 +37,11 @@ function rTree(idx, depth) {
 }
 
 var tree = require('tree')
+  , data = {id: 0, data: 'the top', children: rTree(0, 5)}
 
 React.renderComponent(tree.Tree({
-  manager: new tree.Manager(rTree(0, 5)),
+  manager: new tree.Manager(data),
+  head: Head,
   id: 0,
-  tree: rTree(0, 5),
-/*
-  manager: {
-    getTreeFrom: function (id, done) {return done(data);}
-  }
-*/
 }), document.getElementById('place'))
 

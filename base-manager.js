@@ -19,7 +19,7 @@ BaseManager.prototype = {
       this._on[model][id] = []
     }
     this._on[model][id].push(handler)
-    if (this._map[model][id]) return handler(null, this._map[model][id])
+    if (this._map[model][id]) return handler(this._map[model][id])
     if (this._pending[model][id]) return
     this.fetch(model, id)
   },

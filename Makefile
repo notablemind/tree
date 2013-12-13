@@ -1,5 +1,5 @@
 
-build: components index.js tree.css node.js manager.js base-manager.js mixin.js
+build: components tree.js tree.css node.js manager.js base-manager.js mixin.js
 	@component build --dev -o test/example/ -n index
 
 components: component.json
