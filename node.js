@@ -22,13 +22,13 @@ var TreeNode = module.exports = React.createClass({
   // movement
   actions: {
     moveUp: function (i, focus) {
-      if (i === 0) return this.actions.moveLeft.call(this, i, focus, true)
+      if (i === 0) return this.actions.moveLeft.call(this, i, focus)
       var ids = this.state.children.slice()
       ids.splice(i-1, 0, ids.splice(i, 1)[0])
       this.setChildren(ids, focus, i-1)
     },
     moveDown: function (i, focus) {
-      if (i === this.state.children.length-1) return this.actions.moveLeft.call(this, i, focus)
+      if (i === this.state.children.length-1) return this.actions.moveLeft.call(this, i, focus,  true)
       var ids = this.state.children.slice()
       ids.splice(i+1, 0, ids.splice(i, 1)[0])
       this.setChildren(ids, focus, i+1)
@@ -40,11 +40,11 @@ var TreeNode = module.exports = React.createClass({
       this.refs[i-1].addToEnd(id, focus)
       this.setChildren(children, false)
     },
-    moveLeft: function (i, focus, before) {
+    moveLeft: function (i, focus, after) {
       if (!this.props.addAfter) return
       var children = this.state.children.slice()
         , id = children.splice(i, 1)[0]
-      this.props[before ? 'addBefore' : 'addAfter'](id, focus)
+      this.props[after ? 'addAfter' : 'addBefore'](id, focus)
       this.setChildren(children)
     },
     goUp: function (i, focus) {
@@ -57,8 +57,11 @@ var TreeNode = module.exports = React.createClass({
       this.props.actions.goDown(true)
     },
 
-    newAfter: function (i, focus) {
-      this.addAfter(i, null, focus)
+    createBefore: function (i, text) {
+      this.addBefore(i, this.props.manager.newNode({name: text}), true)
+    },
+    createAfter: function (i, text) {
+      this.addAfter(i, this.props.manager.newNode({name: text}), true)
     },
 
   },
@@ -67,7 +70,7 @@ var TreeNode = module.exports = React.createClass({
     var children = this.state.children.slice()
     if (!id && id !== 0) id = this.props.manager.newNode()
     children.splice(i+1, 0, id)
-    this.setChildren(children, focus, i+1)
+    this.setChildren(children, focus, i+1, true)
   },
 
   addBefore: function (i, id, focus) {
@@ -83,10 +86,13 @@ var TreeNode = module.exports = React.createClass({
     this.setChildren(children, focus, children.length - 1)
   },
 
-  setChildren: function (ids, focus, i) {
+  setChildren: function (ids, focus, i, start) {
     var st = {children: ids}
     this.setState(st)
-    if (focus) this.props.setFocus(i)
+    if (focus) {
+      if (start) this.props.setFocus(i, true)
+      else this.props.setFocus(i)
+    }
     if (!this.props.manager) return
     this.props.manager.set('children', this.props.id, ids)
   },
@@ -119,13 +125,18 @@ var TreeNode = module.exports = React.createClass({
   render: function () {
     var children = false
       , focus = false
-      , trail = false
-    if (this.props.focusTrail.length > 0) {
-      focus = this.props.focusTrail[0]
-      trail = this.props.focusTrail.slice(1)
+      , trail = this.props.focusTrail
+      , focusAtStart = false
+    if (trail && trail.length > 0) {
+      focus = trail[0]
+      trail = trail.slice(1)
       if (focus === -1) {
         trail.push(focus)
         focus = this.state.children.length - 1
+      }
+      if (focus === true) {
+        focusAtStart = true
+        trail = []
       }
     }
     if (this.state.children.length) {
@@ -155,6 +166,10 @@ var TreeNode = module.exports = React.createClass({
     var onData = this.props.manager.on.bind(this.props.manager, 'data', this.props.id)
       , offData = this.props.manager.off.bind(this.props.manager, 'data', this.props.id)
       , setData = this.props.manager.set.bind(this.props.manager, 'data', this.props.id)
+      , headFocus = false
+    if (this.props.focusTrail !== false && ((this.props.focusTrail.length === 1 && this.props.focusTrail[0] === true) || this.props.focusTrail.length === 0 || this.state.children.length === 0)) {
+      headFocus = focusAtStart ? 'start' : true
+    }
 
     return (
       React.DOM.li( {className:"tree-node"}, 
@@ -164,9 +179,7 @@ var TreeNode = module.exports = React.createClass({
               on: onData,
               off: offData,
               id: this.props.id,
-              setFocus: this.props.focusTrail !== false &&
-                (this.props.focusTrail.length === 0 ||
-                 this.state.children.length === 0),
+              setFocus: headFocus,
               onFocus: this.props.setFocus,
               actions: this.getActions(),
               set: setData
