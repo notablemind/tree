@@ -22,13 +22,13 @@ var TreeNode = module.exports = React.createClass({
   // movement
   actions: {
     moveUp: function (i, focus) {
-      if (i === 0) return
+      if (i === 0) return this.actions.moveLeft.call(this, i, focus, true)
       var ids = this.state.children.slice()
       ids.splice(i-1, 0, ids.splice(i, 1)[0])
       this.setChildren(ids, focus, i-1)
     },
     moveDown: function (i, focus) {
-      if (i === this.state.children.length-1) return
+      if (i === this.state.children.length-1) return this.actions.moveLeft.call(this, i, focus)
       var ids = this.state.children.slice()
       ids.splice(i+1, 0, ids.splice(i, 1)[0])
       this.setChildren(ids, focus, i+1)
@@ -40,11 +40,11 @@ var TreeNode = module.exports = React.createClass({
       this.refs[i-1].addToEnd(id, focus)
       this.setChildren(children, false)
     },
-    moveLeft: function (i, focus) {
+    moveLeft: function (i, focus, before) {
       if (!this.props.addAfter) return
       var children = this.state.children.slice()
         , id = children.splice(i, 1)[0]
-      this.props.addAfter(id, focus)
+      this.props[before ? 'addBefore' : 'addAfter'](id, focus)
       this.setChildren(children)
     },
     goUp: function (i, focus) {
@@ -57,13 +57,24 @@ var TreeNode = module.exports = React.createClass({
       this.props.actions.goDown(true)
     },
 
+    newAfter: function (i, focus) {
+      this.addAfter(i, null, focus)
+    },
+
   },
 
   addAfter: function (i, id, focus) {
     var children = this.state.children.slice()
-    if (!id && id !== 0) id = this.props.manager.newId()
+    if (!id && id !== 0) id = this.props.manager.newNode()
     children.splice(i+1, 0, id)
     this.setChildren(children, focus, i+1)
+  },
+
+  addBefore: function (i, id, focus) {
+    var children = this.state.children.slice()
+    if (!id && id !== 0) id = this.props.manager.newNode()
+    children.splice(i, 0, id)
+    this.setChildren(children, focus, i)
   },
 
   addToEnd: function (id, focus) {
@@ -132,6 +143,7 @@ var TreeNode = module.exports = React.createClass({
 
             actions: this.boundActions(i),
             addAfter: this.addAfter.bind(this, i),
+            addBefore: this.addBefore.bind(this, i),
 
             focusTrail: focus === i && trail,
             setFocus: this.props.setFocus.bind(null, i)
@@ -147,7 +159,6 @@ var TreeNode = module.exports = React.createClass({
     return (
       React.DOM.li( {className:"tree-node"}, 
         React.DOM.div( {className:"head"}, 
-           this.props.focusTrail + ' : ', 
           
             this.props.head(m({
               on: onData,
