@@ -58,10 +58,10 @@ var TreeNode = module.exports = React.createClass({
     },
 
     createBefore: function (i, text) {
-      this.addBefore(i, this.props.manager.newNode({name: text}), true)
+      this.addBefore(i, this.newNode(text), true)
     },
     createAfter: function (i, text) {
-      this.addAfter(i, this.props.manager.newNode({name: text}), true)
+      this.addAfter(i, this.newNode(text), true)
     },
     remove: function (i, text) {
       var children = this.state.children.slice()
@@ -75,6 +75,10 @@ var TreeNode = module.exports = React.createClass({
       this.setChildren(children, true, i-1)
       this.refs[i-1].addText(text)
     },
+  },
+
+  newNode: function (text) {
+    return this.props.manager.newNode({data: {text: text}})
   },
 
   addText: function (text) {
@@ -110,7 +114,7 @@ var TreeNode = module.exports = React.createClass({
       else this.props.setFocus(i)
     }
     if (!this.props.manager) return
-    this.props.manager.set('children', this.props.id, ids)
+    this.props.manager.set(this.props.id, 'children', ids)
   },
 
   getActions: function () {
@@ -121,7 +125,7 @@ var TreeNode = module.exports = React.createClass({
     }.bind(this)
     actions.createAfter = function (text, after) {
       if (!this.state.children.length || after) return this.props.actions.createAfter.apply(this, arguments)
-      this.addBefore(0, this.props.manager.newNode({name: text}), true)
+      this.addBefore(0, this.newNode(text), true)
     }.bind(this)
     actions.remove = function (text) {
       console.warn('TODO delete the node from the manager. Its now an orphan')
@@ -188,11 +192,10 @@ var TreeNode = module.exports = React.createClass({
       } </ul>)
     }
 
-    var onData = this.props.manager.on.bind(this.props.manager, 'data', this.props.id)
-      , offData = this.props.manager.off.bind(this.props.manager, 'data', this.props.id)
-      , setData = this.props.manager.set.bind(this.props.manager, 'data', this.props.id)
+    var focusEnd = this.props.focusTrail.length === 1 && this.props.focusTrail[0] === true
+      , shouldGetFocus = focusEnd || this.props.focusTrail.length === 0 || this.state.children.length === 0
       , headFocus = false
-    if (this.props.focusTrail !== false && ((this.props.focusTrail.length === 1 && this.props.focusTrail[0] === true) || this.props.focusTrail.length === 0 || this.state.children.length === 0)) {
+    if (this.props.focusTrail !== false && shouldGetFocus) {
       headFocus = focusAtStart ? 'start' : true
     }
 
@@ -201,14 +204,15 @@ var TreeNode = module.exports = React.createClass({
         <div className="head">
           {
             this.props.head(m({
-              on: onData,
-              off: offData,
+              on: this.props.manager.on.bind(this, this.props.id),
+              off: this.props.manager.off.bind(this, this.props.id),
+              set: this.props.manager.set.bind(this, this.props.id),
+
               id: this.props.id,
               ref: 'head',
               setFocus: headFocus,
               onFocus: this.props.setFocus,
               actions: this.getActions(),
-              set: setData
             }, this.props.headProps))
           }
         </div>

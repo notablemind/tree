@@ -14,9 +14,6 @@ blanket:
 node.js: node.jsx
 	@jsx node.jsx > node.js
 
-index.js: index.jsx
-	@jsx index.jsx > index.js
-
 test:
 	@mocha -R spec
 

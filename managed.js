@@ -15,16 +15,16 @@ module.exports = {
   componentWillReceiveProps: function (props) {
     if (props.id === this.props.id) return
     if (!this.props.manager) return
-    this.props.manager.off('children', this.props.id, this.gotChildren)
-    this.props.manager.on('children', props.id, this.gotChildren)
+    this.props.manager.off(this.props.id, 'children', this.gotChildren)
+    this.props.manager.on(props.id, 'children', this.gotChildren)
   },
   componentWillMount: function () {
     if (!this.props.manager) return
-    this.props.manager.on('children', this.props.id, this.gotChildren)
+    this.props.manager.on(this.props.id, 'children', this.gotChildren)
   },
   componentWillUnmount: function () {
     if (!this.props.manager) return
-    this.props.manager.off('children', this.props.id, this.gotChildren)
+    this.props.manager.off(this.props.id, 'children', this.gotChildren)
   },
 
   gotChildren: function (children) {

@@ -26,7 +26,7 @@ function rTree(idx, depth) {
     , children = []
   for (var i=0; i<n; i++) {
     children.push({
-      id: rid(), // idx + ':' + i,
+      id: rid(),
       data: {
         name: 'Name of ' + idx + ':' + i
       },
@@ -37,7 +37,7 @@ function rTree(idx, depth) {
 }
 
 var Tree = require('tree')
-  , Manager = require('manager')
+  , Manager = require('note-manager')
   , data = {id: 0, data: 'the top', children: rTree(0, 5)}
 
 React.renderComponent(Tree({

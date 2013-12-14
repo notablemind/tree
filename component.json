@@ -8,7 +8,9 @@
     "lodash/lodash": "*",
     "notablemind/manager": "*"
   },
-  "development": {},
+  "development": {
+    "notablemind/note-manager": "*"
+  },
   "license": "MIT",
   "main": "index.js",
   "scripts": [
