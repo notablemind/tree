@@ -3,3 +3,4 @@ build
 *.swp
 *.swo
 test
+node_modules

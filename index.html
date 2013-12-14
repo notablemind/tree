@@ -2,62 +2,25 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Tags Example</title>
+    <title>Tree Example</title>
     <script src="react.js"></script>
     <script src="index.js"></script>
     <link rel="stylesheet" href="index.css">
-      <style>
-        body {
-          font-family: sans-serif;
-        }
-        .wrapper {
-          width: 500px;
-          margin: 50px auto;
-          box-shadow: 0 0 5px #ccc;
-          padding: 10px 30px 30px;
-        }
-      </style>
+    <link rel="stylesheet" href="setup.css">
   </head>
   <body>
-    <a href="https://github.com/notablemind/tree"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <!--a href="https://github.com/notablemind/tree">
+      <img style="position: absolute; top: 0; right: 0; border: 0;"
+           src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
+           alt="Fork me on GitHub">
+    </a-->
     <div class="wrapper">
+      <h2>Editable Tree Example</h2>
+      <div id="inputs"></div>
       <h2>Tree Example</h2>
       <div id="place"></div>
     </div>
-    <script>
-      var Head = React.createClass({
-        render: function () {
-        return React.DOM.span({}, [
-          this.props.id,
-          React.DOM.span({onClick: this.props.goLeft}, '<'),
-          React.DOM.span({onClick: this.props.goRight}, '>'),
-          React.DOM.span({onClick: this.props.goDown}, 'v'),
-          React.DOM.span({onClick: this.props.goUp}, '^'),
-        ])
-        }
-      })
-      var data = [{
-          id: 1, children: []
-        }, {
-          id: 2, children: [
-            {
-              id: 3, children: []
-            }, {
-              id: 4, children: []
-            }, {
-              id: 5, children: []
-            }]
-        }]
-      React.renderComponent(require('tree')({
-        head: Head,
-        data: 'top',
-        id: 0,
-        tree: data,
-        manager: {
-          getTreeFrom: function (id, done) {return done(data);}
-        }
-      }), document.getElementById('place'))
-    </script>
+    <script src="setup.js"></script>
   </body>
 </html>
 
