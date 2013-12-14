@@ -63,7 +63,23 @@ var TreeNode = module.exports = React.createClass({
     createAfter: function (i, text) {
       this.addAfter(i, this.props.manager.newNode({name: text}), true)
     },
+    remove: function (i, text) {
+      var children = this.state.children.slice()
+      children.splice(i, 1)
+      if (i === 0) {
+        this.setChildren(children)
+        this.props.setFocus()
+        this.addText(text)
+        return
+      }
+      this.setChildren(children, true, i-1)
+      this.refs[i-1].addText(text)
+    },
+  },
 
+  addText: function (text) {
+    if (!this.refs.head) return
+    this.refs.head.addText(text)
   },
 
   addAfter: function (i, id, focus) {
@@ -77,7 +93,7 @@ var TreeNode = module.exports = React.createClass({
     var children = this.state.children.slice()
     if (!id && id !== 0) id = this.props.manager.newNode()
     children.splice(i, 0, id)
-    this.setChildren(children, focus, i)
+    this.setChildren(children, focus, i, true)
   },
 
   addToEnd: function (id, focus) {
@@ -102,6 +118,15 @@ var TreeNode = module.exports = React.createClass({
     actions.goDown = function () {
       if (!this.state.children.length) return this.props.actions.goDown.apply(this, arguments)
       this.props.setFocus(0)
+    }.bind(this)
+    actions.createAfter = function (text, after) {
+      if (!this.state.children.length || after) return this.props.actions.createAfter.apply(this, arguments)
+      this.addBefore(0, this.props.manager.newNode({name: text}), true)
+    }.bind(this)
+    actions.remove = function (text) {
+      console.warn('TODO delete the node from the manager. Its now an orphan')
+      if (this.state.children.length) return console.warn('not removing a node w/ children')
+      this.props.actions.remove(text)
     }.bind(this)
     return actions
   },
@@ -179,6 +204,7 @@ var TreeNode = module.exports = React.createClass({
               on: onData,
               off: offData,
               id: this.props.id,
+              ref: 'head',
               setFocus: headFocus,
               onFocus: this.props.setFocus,
               actions: this.getActions(),
