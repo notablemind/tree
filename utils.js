@@ -8,6 +8,7 @@ module.exports = {
 }
 
 function areq(a, b) {
+  if (a === false || b === false) return a === b
   if (a.length != b.length) return false
   for (var i=0; i<a.length; i++) {
     if (a[i] !== b[i]) return false
