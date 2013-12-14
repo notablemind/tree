@@ -39,6 +39,20 @@ module.exports = {
       this.props.addAfter(id, focus)
       this.setChildren(children)
     },
+    goUp: function (i, focus, node) {
+      node.setState({focus: false})
+      if (i === 0) return this.setState({focus: true})
+      this.setState({focus: this.state.children[i-1]})
+    },
+    goDown: function (i, focus, node) {
+      if (node.state.children.length > 0) {
+        return node.setState({focus: node.state.children[0]})
+      }
+      node.setState({focus: false})
+      if (i < this.state.children.length - 1) return this.setState({focus: this.state.children[i+1]})
+      this.actions.goDown(true, this)
+      // this.setState({focus: this.state.children[i-1]})
+    },
 
   },
 

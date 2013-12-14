@@ -10,6 +10,13 @@ var TreeMixin = require('./mixin')
 var TreeNode = module.exports = React.createClass({
   mixins: [TreeMixin],
 
+  getActions: function () {
+    var actions = m({}, this.props.actions)
+    actions.goDown = function () {
+      if (!this.state.children.length) this.props.actions.goDown()
+    }
+  },
+
   render: function () {
     var children = false
     if (this.state.children.length) {
@@ -43,7 +50,7 @@ var TreeNode = module.exports = React.createClass({
               on: onData,
               off: offData,
               id: this.props.id,
-              focus: this.props.focus,
+              focus: this.state.focus === true || this.props.focus,
               actions: this.props.actions,
               set: setData
             }, this.props.headProps))
