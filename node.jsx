@@ -46,7 +46,7 @@ var TreeNode = module.exports = React.createClass({
               focus: this.props.focus,
               move: this.props.move,
               set: setData
-            }, this.props.headProps))
+            }, this.props.headProps), [])
           }
         </div>
         {children}

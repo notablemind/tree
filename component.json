@@ -16,9 +16,7 @@
     "mixin.js",
     "states.js",
     "utils.js",
-    "node.js",
-    "base-manager.js",
-    "manager.js"
+    "node.js"
   ],
   "styles": [
     "tree.css"

@@ -9,7 +9,7 @@ module.exports = {
       moves[name] = this.move[name].bind(this, i)
     }
     return moves
-  }
+  },
 
   // movement
   move: {

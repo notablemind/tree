@@ -17,7 +17,6 @@ var Tree = module.exports = React.createClass({
   getDefaultProps: function () {
     return {
       className: '',
-      manager: new Manager(),
       head: EmptyHead,
       headProps: {},
       id: null
