@@ -36,7 +36,7 @@ var Tree = module.exports = React.createClass({
               headProps: this.props.headProps,
               manager: this.props.manager,
               focus: this.state.focus === id,
-              move: this.moves(i),
+              actions: this.boundActions(i),
               addAfter: this.addAfter.bind(this, i),
             })
           }.bind(this))

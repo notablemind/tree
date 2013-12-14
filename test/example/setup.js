@@ -3,10 +3,10 @@ var Head = React.createClass({
   render: function () {
     return React.DOM.span({}, [
       this.props.id,
-      React.DOM.span({onClick: this.props.move.left}, '<'),
-      React.DOM.span({onClick: this.props.move.right}, '>'),
-      React.DOM.span({onClick: this.props.move.down}, 'v'),
-      React.DOM.span({onClick: this.props.move.up}, '^'),
+      React.DOM.span({onClick: this.props.actions.moveLeft}, '<'),
+      React.DOM.span({onClick: this.props.actions.moveRight}, '>'),
+      React.DOM.span({onClick: this.props.actions.moveDown}, 'v'),
+      React.DOM.span({onClick: this.props.actions.moveUp}, '^'),
     ])
   }
 })

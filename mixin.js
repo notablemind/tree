@@ -3,46 +3,48 @@ var utils = require('./utils')
 
 module.exports = {
 
-  moves: function (i) {
-    var moves = {}
-    for (var name in this.move) {
-      moves[name] = this.move[name].bind(this, i)
+  boundActions: function (i) {
+    var actions = {}
+    for (var name in this.actions) {
+      actions[name] = this.actions[name].bind(this, i)
     }
-    return moves
+    return actions
   },
 
   // movement
-  move: {
-    up: function (i, focus) {
+  actions: {
+    moveUp: function (i, focus) {
       if (i === 0) return
       var ids = this.state.children.slice()
       ids.splice(i-1, 0, ids.splice(i, 1)[0])
       this.setChildren(ids, focus, ids[i-1])
     },
-    down: function (i, focus) {
+    moveDown: function (i, focus) {
       if (i === this.state.children.length-1) return
       var ids = this.state.children.slice()
       ids.splice(i+1, 0, ids.splice(i, 1)[0])
       this.setChildren(ids, focus, ids[i+1])
     },
-    right: function (i, focus) {
+    moveRight: function (i, focus) {
       if (i === 0) return false
       var children = this.state.children.slice()
         , id = children.splice(i, 1)[0]
       this.refs[i-1].addToEnd(id, focus)
       this.setChildren(children)
     },
-    left: function (i, focus) {
+    moveLeft: function (i, focus) {
       if (!this.props.addAfter) return
       var children = this.state.children.slice()
         , id = children.splice(i, 1)[0]
       this.props.addAfter(id, focus)
       this.setChildren(children)
     },
+
   },
 
   addAfter: function (i, id, focus) {
     var children = this.state.children.slice()
+    if (!id && id !== 0) id = this.props.manager.newId()
     children.splice(i+1, 0, id)
     this.setChildren(children, focus, id)
   },

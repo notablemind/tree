@@ -12,11 +12,10 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": [
-    "index.js",
+    "index.jsx",
     "mixin.js",
-    "states.js",
     "utils.js",
-    "node.js"
+    "node.jsx"
   ],
   "styles": [
     "tree.css"
