@@ -51,10 +51,17 @@ var TreeNode = module.exports = React.createClass({
       if (i === 0) return this.props.setFocus()
       this.props.setFocus(i-1, -1)
     },
-    goDown: function (i, focus) {
-      if (i < this.state.children.length - 1) return this.props.setFocus(i + 1)
+    goDown: function (i, focus, start) {
+      if (i < this.state.children.length - 1) {
+        if (start === true) {
+          this.props.setFocus(i + 1, true)
+        } else {
+          this.props.setFocus(i + 1)
+        }
+        return 
+      }
       if (!this.props.actions) return
-      this.props.actions.goDown(true)
+      this.props.actions.goDown(true, start)
     },
 
     createBefore: function (i, text) {
@@ -119,9 +126,10 @@ var TreeNode = module.exports = React.createClass({
 
   getActions: function () {
     var actions = m({}, this.props.actions)
-    actions.goDown = function () {
+    actions.goDown = function (focus, start) {
       if (!this.state.children.length) return this.props.actions.goDown.apply(this, arguments)
-      this.props.setFocus(0)
+      if (start === true) this.props.setFocus(0, true)
+      else this.props.setFocus(0)
     }.bind(this)
     actions.createAfter = function (text, after) {
       if (!this.state.children.length || after) return this.props.actions.createAfter.apply(this, arguments)
@@ -204,9 +212,9 @@ var TreeNode = module.exports = React.createClass({
         React.DOM.div( {className:"head"}, 
           
             this.props.head(m({
-              on: this.props.manager.on.bind(this, this.props.id),
-              off: this.props.manager.off.bind(this, this.props.id),
-              set: this.props.manager.set.bind(this, this.props.id),
+              on: this.props.manager.on.bind(this.props.manager, this.props.id),
+              off: this.props.manager.off.bind(this.props.manager, this.props.id),
+              set: this.props.manager.set.bind(this.props.manager, this.props.id),
 
               id: this.props.id,
               ref: 'head',
