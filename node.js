@@ -11,12 +11,6 @@ var utils = require('./utils')
 var TreeNode = module.exports = React.createClass({
   mixins: [Managed],
 
-  getInitialState: function () {
-    return {
-      open: true
-    }
-  },
-
   boundActions: function (i) {
     var actions = {}
     for (var name in this.actions) {
@@ -167,7 +161,9 @@ var TreeNode = module.exports = React.createClass({
   },
 
   toggleOpen: function () {
-    this.setState({open: !this.state.open})
+    var open = !this.state.open
+    this.setState({open: open})
+    this.props.manager.set(this.props.id, 'open', open)
   },
 
   render: function () {
@@ -218,26 +214,34 @@ var TreeNode = module.exports = React.createClass({
       headFocus = focusAtStart ? 'start' : true
     }
 
+    var heads = [
+      React.DOM.div({
+        className: "expander",
+        onMouseDown: this.toggleOpen,
+        style: this.state.children.length ? {} : {visibility: 'hidden'}
+      }),
+      this.props.head(m({
+        on: this.props.manager.on.bind(this.props.manager, this.props.id),
+        off: this.props.manager.off.bind(this.props.manager, this.props.id),
+        set: this.props.manager.set.bind(this.props.manager, this.props.id),
+
+        id: this.props.id,
+        ref: 'head',
+        setFocus: headFocus,
+        onFocus: this.props.setFocus,
+        actions: this.getActions(),
+      }, this.props.headProps))
+    ]
+    var jumpto = React.DOM.div({
+      className: 'jumpto',
+      onMouseDown: this.props.jumpTo
+    })
+    heads.splice(this.state.children.length ? 0 : 1, 0, jumpto)
+
     return (
       React.DOM.li( {className:"tree-node " + (this.state.open ? 'open' : 'closed')}, 
         React.DOM.div( {className:"head"}, 
-          React.DOM.div(
-            {className:"expander",
-            onMouseDown:this.toggleOpen,
-            style: this.state.children.length ? {} : {visibility: 'hidden'}}),
-          
-            this.props.head(m({
-              on: this.props.manager.on.bind(this.props.manager, this.props.id),
-              off: this.props.manager.off.bind(this.props.manager, this.props.id),
-              set: this.props.manager.set.bind(this.props.manager, this.props.id),
-
-              id: this.props.id,
-              ref: 'head',
-              setFocus: headFocus,
-              onFocus: this.props.setFocus,
-              actions: this.getActions(),
-            }, this.props.headProps))
-          
+          heads
         ),
         children
       )

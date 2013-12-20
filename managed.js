@@ -10,25 +10,28 @@ module.exports = {
     }
   },
   getInitialState: function () {
-    return {children: this.props.initialChildren}
+    return {
+      children: this.props.initialChildren,
+      open: true
+    }
   },
   componentWillReceiveProps: function (props) {
     if (props.id === this.props.id) return
     if (!this.props.manager) return
-    this.props.manager.off(this.props.id, 'children', this.gotChildren)
-    this.props.manager.on(props.id, 'children', this.gotChildren)
+    this.props.manager.off(this.props.id, this.gotData)
+    this.props.manager.on(props.id, this.gotData)
   },
   componentWillMount: function () {
     if (!this.props.manager) return
-    this.props.manager.on(this.props.id, 'children', this.gotChildren)
+    this.props.manager.on(this.props.id, this.gotData)
   },
   componentWillUnmount: function () {
     if (!this.props.manager) return
-    this.props.manager.off(this.props.id, 'children', this.gotChildren)
+    this.props.manager.off(this.props.id, this.gotData)
   },
 
-  gotChildren: function (children) {
-    this.setState({children: children})
+  gotData: function (data) {
+    this.setState({children: data.children, open: !!data.open})
   },
 
 }

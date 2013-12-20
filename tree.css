@@ -11,6 +11,7 @@
   display: none;
 }
 
+.tree-node > .head > .jumpto,
 .tree-node > .head > .expander {
   display: inline-block;
   cursor: pointer;
@@ -20,5 +21,8 @@
 }
 .tree-node.closed > .head > .expander:before {
   content: '+';
+}
+.tree-node > .head > .jumpto:before {
+  content:  '\00BB';
 }
 
