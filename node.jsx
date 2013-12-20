@@ -11,6 +11,12 @@ var utils = require('./utils')
 var TreeNode = module.exports = React.createClass({
   mixins: [Managed],
 
+  getInitialState: function () {
+    return {
+      open: true
+    }
+  },
+
   boundActions: function (i) {
     var actions = {}
     for (var name in this.actions) {
@@ -64,11 +70,11 @@ var TreeNode = module.exports = React.createClass({
       this.props.actions.goDown(true, start)
     },
 
-    createBefore: function (i, text) {
-      this.addBefore(i, this.newNode(text), true)
+    createBefore: function (i, data) {
+      this.addBefore(i, this.newNode(data), true)
     },
-    createAfter: function (i, text) {
-      this.addAfter(i, this.newNode(text), true)
+    createAfter: function (i, data) {
+      this.addAfter(i, this.newNode(data), true)
     },
     remove: function (i, text) {
       var children = this.state.children.slice()
@@ -84,8 +90,8 @@ var TreeNode = module.exports = React.createClass({
     },
   },
 
-  newNode: function (text) {
-    return this.props.manager.newNode({data: {text: text}})
+  newNode: function (data) {
+    return this.props.manager.newNode(data ? {data: data} : undefined)
   },
 
   addText: function (text) {
@@ -131,9 +137,9 @@ var TreeNode = module.exports = React.createClass({
       if (start === true) this.props.setFocus(0, true)
       else this.props.setFocus(0)
     }.bind(this)
-    actions.createAfter = function (text, after) {
+    actions.createAfter = function (data, after) {
       if (!this.state.children.length || after) return this.props.actions.createAfter.apply(this, arguments)
-      this.addBefore(0, this.newNode(text), true)
+      this.addBefore(0, this.newNode(data), true)
     }.bind(this)
     actions.remove = function (text) {
       console.warn('TODO delete the node from the manager. Its now an orphan')
@@ -154,9 +160,14 @@ var TreeNode = module.exports = React.createClass({
 
   shouldComponentUpdate: function (props, state) {
     return props.id !== this.props.id ||
+           state.open !== this.state.open ||
            props.index !== this.props.index ||
            !utils.areq(props.focusTrail, this.props.focusTrail) ||
            !utils.areq(state.children, this.state.children)
+  },
+
+  toggleOpen: function () {
+    this.setState({open: !this.state.open})
   },
 
   render: function () {
@@ -177,7 +188,7 @@ var TreeNode = module.exports = React.createClass({
       }
     }
     if (this.state.children.length) {
-      children = (<ul> {
+      children = (<ul className="tree-children"> {
         this.state.children.map(function (id, i) {
           return TreeNode({
             id: id,
@@ -208,8 +219,12 @@ var TreeNode = module.exports = React.createClass({
     }
 
     return (
-      <li className="tree-node">
+      <li className={"tree-node " + (this.state.open ? 'open' : 'closed')}>
         <div className="head">
+          <div
+            className="expander"
+            onMouseDown={this.toggleOpen}
+            style={ this.state.children.length ? {} : {visibility: 'hidden'}}></div>
           {
             this.props.head(m({
               on: this.props.manager.on.bind(this.props.manager, this.props.id),

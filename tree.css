@@ -3,3 +3,22 @@
   padding-left: 20px;
 }
 
+.tree-node.open > .tree-children {
+  display: block;
+}
+
+.tree-node.closed > .tree-children {
+  display: none;
+}
+
+.tree-node > .head > .expander {
+  display: inline-block;
+  cursor: pointer;
+}
+.tree-node.open > .head > .expander:before {
+  content: '-';
+}
+.tree-node.closed > .head > .expander:before {
+  content: '+';
+}
+
