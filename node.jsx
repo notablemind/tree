@@ -131,7 +131,7 @@ var TreeNode = module.exports = React.createClass({
   getActions: function () {
     var actions = m({}, this.props.actions)
     actions.goDown = function (focus, start) {
-      if (!this.state.children.length) return this.props.actions.goDown.apply(this, arguments)
+      if (!this.state.children.length || !this.state.open) return this.props.actions.goDown.apply(this, arguments)
       if (start === true) this.props.setFocus(0, true)
       else this.props.setFocus(0)
     }.bind(this)
@@ -212,7 +212,7 @@ var TreeNode = module.exports = React.createClass({
     }
 
     var focusEnd = this.props.focusTrail.length === 1 && this.props.focusTrail[0] === true
-      , shouldGetFocus = focusEnd || this.props.focusTrail.length === 0 || this.state.children.length === 0
+      , shouldGetFocus = focusEnd || this.props.focusTrail.length === 0 || this.state.children.length === 0 || !this.state.open
       , headFocus = false
     if (this.props.focusTrail !== false && shouldGetFocus) {
       headFocus = focusAtStart ? 'start' : true
