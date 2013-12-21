@@ -114,7 +114,8 @@ var TreeNode = module.exports = React.createClass({
   },
 
   setChildren: function (ids, focus, i, start) {
-    var st = {children: ids}
+    var st = {children: ids, open: true}
+      , open = this.state.open
     this.setState(st)
     if (focus) {
       if (start) this.props.setFocus(i, true)
@@ -122,6 +123,9 @@ var TreeNode = module.exports = React.createClass({
     }
     if (!this.props.manager) return
     this.props.manager.set(this.props.id, 'children', ids)
+    if (!this.state.open) {
+      this.props.manager.set(this.props.id, 'open', true)
+    }
   },
 
   getActions: function () {
