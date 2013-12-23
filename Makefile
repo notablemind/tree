@@ -11,9 +11,6 @@ clean:
 blanket:
 	@mocha -R html-cov --require blanket > coverage.html
 
-node.js: node.jsx
-	@jsx node.jsx > node.js
-
 test:
 	@mocha -R spec
 

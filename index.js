@@ -28,6 +28,11 @@ var Tree = module.exports = React.createClass({
   setFocus: function () {
     this.setState({focusTrail: [].slice.call(arguments)})
   },
+  killFocus: function () {
+    if (this.state.focusTrail !== false) {
+      this.setState({focusTrail: false})
+    }
+  },
   render: function () {
     return React.DOM.ul({className: 'tree ' + this.props.className}, [
       TreeNode({
@@ -36,7 +41,8 @@ var Tree = module.exports = React.createClass({
         manager: this.props.manager,
         headProps: this.props.headProps,
         focusTrail: this.state.focusTrail,
-        setFocus: this.setFocus
+        setFocus: this.setFocus,
+        killFocus: this.killFocus
       })
     ])
   }

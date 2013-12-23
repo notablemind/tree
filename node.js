@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 
 function m(a, b) {
   for (var n in b) {a[n] = b[n]}
@@ -7,6 +6,7 @@ function m(a, b) {
 
 var utils = require('./utils')
   , Managed = require('./managed')
+  , d = React.DOM
 
 var TreeNode = module.exports = React.createClass({
   mixins: [Managed],
@@ -48,16 +48,14 @@ var TreeNode = module.exports = React.createClass({
       this.setChildren(children)
     },
     goUp: function (i, focus) {
-      if (i === 0) return this.props.setFocus()
-      this.props.setFocus(i-1, -1)
+      this.props.killFocus()
+      if (i === 0) return this.focusHead()
+      this.refs[i-1].focusHead()
     },
     goDown: function (i, focus, start) {
+      this.props.killFocus()
       if (i < this.state.children.length - 1) {
-        if (start === true) {
-          this.props.setFocus(i + 1, true)
-        } else {
-          this.props.setFocus(i + 1)
-        }
+        this.refs[i+1].focusHead(start)
         return 
       }
       if (!this.props.actions) return
@@ -181,6 +179,10 @@ var TreeNode = module.exports = React.createClass({
     this.props.manager.set(this.props.id, 'open', open)
   },
 
+  focusHead: function (start) {
+    this.refs.head.focus(start)
+  },
+
   render: function () {
     var children = false
       , focus = false
@@ -199,7 +201,7 @@ var TreeNode = module.exports = React.createClass({
       }
     }
     if (this.state.children.length) {
-      children = (React.DOM.ul( {className:"tree-children"},  
+      children = (d.ul( {className:"tree-children"},  
         this.state.children.map(function (id, i) {
           return TreeNode({
             id: id,
@@ -216,7 +218,8 @@ var TreeNode = module.exports = React.createClass({
             addBefore: this.addBefore.bind(this, i),
 
             focusTrail: focus === i && trail,
-            setFocus: this.props.setFocus.bind(null, i)
+            setFocus: this.props.setFocus.bind(null, i),
+            killFocus: this.props.killFocus,
           })
         }.bind(this))
        ))
@@ -230,7 +233,7 @@ var TreeNode = module.exports = React.createClass({
     }
 
     var heads = [
-      React.DOM.div({
+      d.div({
         className: "expander",
         onMouseDown: this.toggleOpen,
         style: this.state.children.length ? {} : {visibility: 'hidden'}
@@ -247,15 +250,15 @@ var TreeNode = module.exports = React.createClass({
         actions: this.getActions(),
       }, this.props.headProps))
     ]
-    var jumpto = React.DOM.div({
+    var jumpto = d.div({
       className: 'jumpto',
       onMouseDown: this.props.jumpTo
     })
     heads.splice(this.state.children.length ? 0 : 1, 0, jumpto)
 
     return (
-      React.DOM.li( {className:"tree-node " + (this.state.open ? 'open' : 'closed')}, 
-        React.DOM.div( {className:"head"}, 
+      d.li( {className:"tree-node " + (this.state.open ? 'open' : 'closed')}, 
+        d.div( {className:"head"}, 
           heads
         ),
         children
