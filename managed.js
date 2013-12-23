@@ -31,7 +31,7 @@ module.exports = {
   },
 
   gotData: function (data) {
-    this.setState({children: data.children, open: !!data.open})
+    this.setState({children: data.children || [], open: !!data.open})
   },
 
 }

@@ -65,10 +65,14 @@ var TreeNode = module.exports = React.createClass({
     },
 
     createBefore: function (i, data) {
-      this.addBefore(i, this.newNode(data), true)
+      this.newNode(data, function (id) {
+        this.addBefore(i, id, true)
+      }.bind(this))
     },
     createAfter: function (i, data) {
-      this.addAfter(i, this.newNode(data), true)
+      this.newNode(data, function (id) {
+        this.addAfter(i, id, true)
+      }.bind(this))
     },
     remove: function (i, text) {
       var children = this.state.children.slice()
@@ -84,8 +88,8 @@ var TreeNode = module.exports = React.createClass({
     },
   },
 
-  newNode: function (data) {
-    return this.props.manager.newNode(data ? {data: data} : undefined)
+  newNode: function (data, done) {
+    this.props.manager.newNode((data ? {data: data} : undefined), done)
   },
 
   addText: function (text) {
@@ -95,14 +99,14 @@ var TreeNode = module.exports = React.createClass({
 
   addAfter: function (i, id, focus) {
     var children = this.state.children.slice()
-    if (!id && id !== 0) id = this.props.manager.newNode()
+    // if (!id && id !== 0) id = this.props.manager.newNode()
     children.splice(i+1, 0, id)
     this.setChildren(children, focus, i+1, true)
   },
 
   addBefore: function (i, id, focus) {
     var children = this.state.children.slice()
-    if (!id && id !== 0) id = this.props.manager.newNode()
+    // if (!id && id !== 0) id = this.props.manager.newNode()
     children.splice(i, 0, id)
     this.setChildren(children, focus, i, true)
   },
@@ -131,15 +135,22 @@ var TreeNode = module.exports = React.createClass({
   getActions: function () {
     var actions = m({}, this.props.actions)
     actions.goDown = function (focus, start) {
-      if (!this.state.children.length || !this.state.open) return this.props.actions.goDown.apply(this, arguments)
+      if (!this.state.children.length || !this.state.open) {
+        return this.props.actions.goDown.apply(this, arguments)
+      }
       if (start === true) this.props.setFocus(0, true)
       else this.props.setFocus(0)
     }.bind(this)
     actions.createAfter = function (data, after) {
-      if (!this.state.children.length || after) return this.props.actions.createAfter.apply(this, arguments)
-      this.addBefore(0, this.newNode(data), true)
+      if ((!this.state.children.length || after) && this.props.actions && this.props.actions.createAfter) {
+	      return this.props.actions.createAfter.apply(this, arguments)
+      }
+      this.newNode(data, function (id) {
+        this.addBefore(0, id, true)
+      }.bind(this))
     }.bind(this)
     actions.remove = function (text) {
+      if (!this.props.actions || !this.props.actions.remove) return
       console.warn('TODO delete the node from the manager. Its now an orphan')
       if (this.state.children.length) return console.warn('not removing a node w/ children')
       this.props.actions.remove(text)
