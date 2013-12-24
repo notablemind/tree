@@ -47,6 +47,20 @@ var TreeNode = module.exports = React.createClass({
       this.props[after ? 'addAfter' : 'addBefore'](id, focus)
       this.setChildren(children)
     },
+    goLeft: function (i) {
+      this.props.killFocus()
+      if (i === 0) return this.focusHead()
+      this.refs[i-1].focusHead()
+    },
+    goRight: function (i) {
+      this.props.killFocus()
+      if (i < this.state.children.length - 1) {
+        this.refs[i+1].focusHead(true)
+        return 
+      }
+      if (!this.props.actions) return
+      this.props.actions.goDown(true, true)
+    },
     goUp: function (i, focus) {
       this.props.killFocus()
       if (i === 0) return this.focusHead()
@@ -136,11 +150,17 @@ var TreeNode = module.exports = React.createClass({
       if (!this.state.children.length || !this.state.open) {
         return this.props.actions.goDown.apply(this, arguments)
       }
-      if (start === true) this.props.setFocus(0, true)
-      else this.props.setFocus(0)
+      this.refs[0].focusHead(start===true)
+    }.bind(this)
+    actions.goRight = function (focus, start) {
+      if (!this.state.children.length || !this.state.open) {
+        return this.props.actions.goRight.apply(this, arguments)
+      }
+      this.refs[0].focusHead(true)
     }.bind(this)
     actions.createAfter = function (data, after) {
-      if ((!this.state.children.length || after) && this.props.actions && this.props.actions.createAfter) {
+      if ((!this.state.children.length || after) &&
+          this.props.actions && this.props.actions.createAfter) {
 	      return this.props.actions.createAfter.apply(this, arguments)
       }
       this.newNode(data, function (id) {
@@ -180,7 +200,7 @@ var TreeNode = module.exports = React.createClass({
   },
 
   focusHead: function (start) {
-    this.refs.head.focus(start)
+    this.refs.head.focus(start === true)
   },
 
   render: function () {
